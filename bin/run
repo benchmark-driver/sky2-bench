@@ -17,6 +17,7 @@ git submodule init && git submodule update
 
 # 4. Build latest 1000 ruby revisions
 env \
+  BUILD_RUBY_BRANCH=trunk \
   BUILD_RUBY_REVISIONS=1000 \
   BUILD_RUBY_REPOSITORY="$ruby_repo" \
   BUILD_RUBY_PREFIXES_DIR="/home/k0kubun/.rbenv/versions" \
