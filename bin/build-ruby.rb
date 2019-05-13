@@ -42,6 +42,8 @@ Dir.chdir(build_ruby_repository) do
       latest_revisions
     end
 
+  p latest_built_revision
+  p revisions_to_build
   revisions_to_build.each do |revision|
     RubyBuilder.install_revision(revision)
     puts "Build!: #{revision}"
