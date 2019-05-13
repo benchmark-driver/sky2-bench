@@ -75,6 +75,5 @@ Dir.chdir(build_ruby_repository) do
 
   revisions_to_build.each do |revision|
     RubyBuilder.install_revision(revision)
-    break # DEBUG
   end
 end
