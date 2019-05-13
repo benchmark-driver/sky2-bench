@@ -9,7 +9,7 @@ build_ruby_repository = ENV.fetch('BUILD_RUBY_REPOSITORY')
 
 # older first
 latest_revisions = IO.popen(
-  ['git', 'log', '--pretty=format:"%h"', '--abbrev=10', '--reverse', '--topo-order', '-n', build_ruby_revisions.to_s], &:read)
+  ['git', 'log', '--pretty=format:%h', '--abbrev=10', '--reverse', '--topo-order', '-n', build_ruby_revisions.to_s], &:read)
   .lines.map(&:strip)
 
 system('git', 'show', latest_revisions.first)
