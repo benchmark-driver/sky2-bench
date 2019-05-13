@@ -34,7 +34,7 @@ Dir.chdir(build_ruby_repository) do
     RubyBuilder.uninstall_revision(obsolete_revision)
   end
 
-  latest_built_revision = latest_revisions.reverse.find { |rev| !built_revisions.include?(rev) }
+  latest_built_revision = latest_revisions.reverse.find { |rev| built_revisions.include?(rev) }
   revisions_to_build =
     if latest_built_revision
       latest_revisions[(latest_revisions.index(latest_built_revision) + 1)..]
@@ -42,8 +42,6 @@ Dir.chdir(build_ruby_repository) do
       latest_revisions
     end
 
-  p latest_built_revision
-  p revisions_to_build
   revisions_to_build.each do |revision|
     RubyBuilder.install_revision(revision)
     puts "Build!: #{revision}"
