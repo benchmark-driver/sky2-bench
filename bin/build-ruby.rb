@@ -23,7 +23,7 @@ class << RubyBuilder
   # Assumes build_ruby_repository is checked out
   def install_revision(revision)
     prefix = File.join(prefixes_dir, revision)
-    execute('git', 'reset', '--hard', revision) && (try_make || clean_make)
+    execute('git', 'reset', '--hard', revision) && (try_make(prefix) || clean_make(prefix))
   end
 
   def uninstall_revision(revision)
@@ -38,14 +38,14 @@ class << RubyBuilder
 
   private
 
-  def try_make
+  def try_make(prefix)
     execute("./configure --prefix=#{prefix.shellescape} --disable-install-doc") && execute('make', '-j4', 'all', 'install')
   end
 
-  def clean_make
+  def clean_make(prefix)
     execute('make', 'clean')
     execute('autoconf')
-    try_make
+    try_make(prefix)
   end
 end
 
