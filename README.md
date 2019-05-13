@@ -4,7 +4,7 @@ Benchmark runner for ruby-sky2 server.
 
 ## Benchmark runner
 
-ruby-sky2 periodically executs:
+Every minute, ruby-sky2 executs:
 
 ```bash
 $ bin/run
