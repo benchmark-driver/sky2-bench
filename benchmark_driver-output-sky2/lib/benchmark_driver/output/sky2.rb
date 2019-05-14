@@ -1,5 +1,6 @@
 require 'benchmark_driver'
 require 'yaml'
+require 'fileutils'
 
 class BenchmarkDriver::Output::Sky2
   # @param [Array<BenchmarkDriver::Metric>] metrics
@@ -87,6 +88,7 @@ class BenchmarkDriver::Output::Sky2
       base_hash['results'][job] = Hash[base_hash['results'][job].to_a.sort_by(&:first)]
     end
 
+    FileUtils.mkdir_p(File.dirname(path))
     File.write(path, base_hash.to_yaml)
   end
 end
