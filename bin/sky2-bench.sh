@@ -1,5 +1,6 @@
 #!/bin/bash -eu
 sky2_bench="$(cd "$(dirname $0)"; cd ..; pwd)"
+sky2_result="$(cd "$sky2_bench"; cd ./sky2-result; pwd)"
 ruby_repo="$(cd "$sky2_bench"; cd ../ruby; pwd)"
 
 # 0. systemd-timer updates this repository to latest master
@@ -24,7 +25,8 @@ env \
   "${sky2_bench}/bin/build-ruby.rb"
 
 # 5. Update sky2-result
-# ...
+git -C "$sky2_result" fetch origin master
+git -C "$sky2_result" reset --hard remotes/origin/master
 
 # 6. Update all release benchmark yamls
 # "${sky2_bench}/bin/release-bench.rb"
