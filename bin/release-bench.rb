@@ -51,7 +51,7 @@ pattern_configs.each do |pattern, config|
         puts "Failed to execute: #{cmd.shelljoin}"
       end
     end
-    jit_versions, vm_versions = (target_versions - built_versions).select { |v| v.end_with?('--jit') }
+    jit_versions, vm_versions = (target_versions - built_versions).partition { |v| v.end_with?('--jit') }
     benchmark_driver.call(vm_versions, config.vm_count) if config.vm_count > 0
     benchmark_driver.call(jit_versions, config.jit_count) if config.jit_count > 0
   end
