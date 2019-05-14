@@ -1,0 +1,13 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    benchmark_driver (0.14.15)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  benchmark_driver
+
+BUNDLED WITH
+   1.17.2
