@@ -43,8 +43,12 @@ pattern_configs.each do |pattern, config|
         []
       end
 
+    # separate for different --repeat-count
+    jit_versions, vm_versions = (target_versions - built_versions).partition { |v| v.end_with?(' --jit') }
+
     # run benchmarks
     benchmark_driver = proc do |versions, repeat_count|
+      next if versions.empty? || repeat_count == 0
       cmd = [
         'benchmark-driver', definition_file, '--rbenv', versions.join(';'),
         '--repeat-count', repeat_count.to_s, '--output', 'sky2', '--timeout', '60',
@@ -54,8 +58,7 @@ pattern_configs.each do |pattern, config|
         puts "Failed to execute: #{cmd.shelljoin}"
       end
     end
-    jit_versions, vm_versions = (target_versions - built_versions).partition { |v| v.end_with?('--jit') }
-    benchmark_driver.call(vm_versions.sort, config.vm_count) if !vm_versions.empty? && config.vm_count > 0
-    benchmark_driver.call(jit_versions.sort, config.jit_count) if !jit_versions.empty? && config.jit_count > 0
+    benchmark_driver.call(vm_versions.sort, config.vm_count)
+    benchmark_driver.call(jit_versions.sort, config.jit_count)
   end
 end

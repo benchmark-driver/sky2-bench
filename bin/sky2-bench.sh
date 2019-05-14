@@ -37,7 +37,11 @@ env \
   bundle exec "${sky2_bench}/bin/release-bench.rb"
 
 # 7. Update benchmark yamls for some limited revisions
-bundle exec "${sky2_bench}/bin/commit-bench.rb"
+env \
+  RELEASE_BENCH_DEFINITION_DIR="${sky2_bench}/benchmark" \
+  RELEASE_BENCH_PREFIXES_DIR="/home/k0kubun/.rbenv/versions" \
+  RELEASE_BENCH_RESULT_DIR="${sky2_result}" \
+  bundle exec "${sky2_bench}/bin/commit-bench.rb"
 
 # 8. Commit sky2-result
 cd "$sky2_result"
