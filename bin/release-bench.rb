@@ -52,7 +52,7 @@ pattern_configs.each do |pattern, config|
       end
     end
     jit_versions, vm_versions = (target_versions - built_versions).partition { |v| v.end_with?('--jit') }
-    benchmark_driver.call(vm_versions, config.vm_count) if config.vm_count > 0
-    benchmark_driver.call(jit_versions, config.jit_count) if config.jit_count > 0
+    benchmark_driver.call(vm_versions, config.vm_count) if !vm_versions.empty? && config.vm_count > 0
+    benchmark_driver.call(jit_versions, config.jit_count) if !jit_versions.empty? && config.jit_count > 0
   end
 end
