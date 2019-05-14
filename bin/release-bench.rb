@@ -33,7 +33,7 @@ pattern_configs.each do |pattern, config|
   ]
 
   Dir.glob(File.join(definition_dir, pattern)).each do |definition_file|
-    result_file = File.join(result_dir, definition.delete_prefix(definition_dir))
+    result_file = File.join(result_dir, definition_file.delete_prefix(definition_dir))
 
     # get versions built for all benchmarks in definition
     built_versions =
