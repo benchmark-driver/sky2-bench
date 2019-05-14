@@ -12,16 +12,15 @@ prefixes_dir   = ENV.fetch('RELEASE_BENCH_PREFIXES_DIR')
 result_dir     = ENV.fetch('RELEASE_BENCH_RESULT_DIR')
 
 BenchConfig = Struct.new(
-  :revisions, # Scheduling priority. Larger is built more.
   :vm_count,  # --repeat-count for VM executions
   :jit_count, # --repeat-count for JIT executions
   keyword_init: true,
 )
 
 pattern_configs = {
-  'mjit-benchmarks/benchmarks/*.yml'           => BenchConfig.new(revisions:  1, vm_count: 1, jit_count: 1),
-  'optcarrot/benchmark.yml'                    => BenchConfig.new(revisions: 10, vm_count: 2, jit_count: 4),
-  'ruby-method-benchmarks/benchmarks/**/*.yml' => BenchConfig.new(revisions:  1, vm_count: 1, jit_count: 0),
+  'mjit-benchmarks/benchmarks/*.yml'           => BenchConfig.new(vm_count: 1, jit_count: 1),
+  'optcarrot/benchmark.yml'                    => BenchConfig.new(vm_count: 2, jit_count: 4),
+  'ruby-method-benchmarks/benchmarks/**/*.yml' => BenchConfig.new(vm_count: 1, jit_count: 0),
 }
 
 ruby_versions = Dir.glob(File.join(prefixes_dir, '*')).map(&File.method(:basename)).reject { |f| f.match(/\A\h{10}\z/) }
