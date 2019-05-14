@@ -47,7 +47,7 @@ pattern_configs.each do |pattern, config|
     (target_versions - built_versions).each do |version|
       cmd = [
         'benchmark-driver', definition_file, '--rbenv', version, '--output', 'sky2',
-        '--repeat-count', (version.end_with?(' --jit') ? config.jit_count : config.vm_count),
+        '--repeat-count', (version.end_with?(' --jit') ? config.jit_count : config.vm_count).to_s,
       ]
       puts "+ #{cmd.shelljoin}"
       unless system({ 'RESULT_YAML' => result_file }, *cmd) # Keep running even on failure of each benchmark execution
