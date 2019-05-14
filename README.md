@@ -7,7 +7,7 @@ Benchmark runner for ruby-sky2 server.
 Every minute, ruby-sky2 executs:
 
 ```bash
-$ bin/run
+$ bin/sky2-bench.sh
 ```
 
 ## License
