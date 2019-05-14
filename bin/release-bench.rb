@@ -45,7 +45,10 @@ pattern_configs.each do |pattern, config|
 
     # run benchmarks
     benchmark_driver = proc do |versions, repeat_count|
-      cmd = ['benchmark-driver', definition_file, '--rbenv', versions.join(';'), '-o', 'sky2', '--repeat-count', repeat_count.to_s]
+      cmd = [
+        'benchmark-driver', definition_file, '--rbenv', versions.join(';'),
+        '--repeat-count', repeat_count.to_s, '--output', 'sky2', '--timeout', '60',
+      ]
       puts "+ #{cmd.shelljoin}"
       unless system({ 'RESULT_YAML' => result_file }, *cmd) # Keep running even on failure of each benchmark execution
         puts "Failed to execute: #{cmd.shelljoin}"
