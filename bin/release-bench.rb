@@ -27,8 +27,8 @@ ruby_versions = Dir.glob(File.join(prefixes_dir, '*')).map(&File.method(:basenam
 
 pattern_configs.each do |pattern, config|
   target_versions = [
-    *(ruby_versions if config.vm_count > 0),
-    *(ruby_versions.select { |v| Gem::Version.new(v) >= Gem::Version.new('2.6.0') }.map { |v| "#{v} --jit" } if config.jit_count > 0),
+    *ruby_versions,
+    *ruby_versions.select { |v| Gem::Version.new(v) >= Gem::Version.new('2.6.0') }.map { |v| "#{v} --jit" },
   ]
 
   Dir.glob(File.join(definition_dir, pattern)).each do |definition_file|
@@ -44,15 +44,15 @@ pattern_configs.each do |pattern, config|
       end
 
     # run benchmarks
-    (target_versions - built_versions).each do |version|
-      cmd = [
-        'benchmark-driver', definition_file, '--rbenv', version, '--output', 'sky2',
-        '--repeat-count', (version.end_with?(' --jit') ? config.jit_count : config.vm_count).to_s,
-      ]
+    benchmark_driver = proc do |versions, repeat_count|
+      cmd = ['benchmark-driver', definition_file, '--rbenv', versions.join(';'), '-o', 'sky2', '--repeat-count', repeat_count.to_s]
       puts "+ #{cmd.shelljoin}"
       unless system({ 'RESULT_YAML' => result_file }, *cmd) # Keep running even on failure of each benchmark execution
         puts "Failed to execute: #{cmd.shelljoin}"
       end
     end
+    jit_versions, vm_versions = (target_versions - built_versions).select { |v| v.end_with?('--jit') }
+    benchmark_driver.call(vm_versions, config.vm_count) if config.vm_count > 0
+    benchmark_driver.call(jit_versions, config.jit_count) if config.jit_count > 0
   end
 end
