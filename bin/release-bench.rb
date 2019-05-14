@@ -28,7 +28,7 @@ ruby_versions = Dir.glob(File.join(prefixes_dir, '*')).map(&File.method(:basenam
 pattern_configs.each do |pattern, config|
   target_versions = [
     *(ruby_versions if config.vm_count > 0),
-    *(ruby_versions.map { |v| "#{v} --jit" } if config.jit_count > 0),
+    *(ruby_versions.select { |v| Gem::Version.new(v) >= Gem::Version.new('2.6.0') }.map { |v| "#{v} --jit" } if config.jit_count > 0),
   ]
 
   Dir.glob(File.join(definition_dir, pattern)).each do |definition_file|
