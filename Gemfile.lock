@@ -1,3 +1,8 @@
+PATH
+  remote: benchmark_driver-output-sky2
+  specs:
+    benchmark_driver-output-sky2 (0.1.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -8,6 +13,7 @@ PLATFORMS
 
 DEPENDENCIES
   benchmark_driver
+  benchmark_driver-output-sky2!
 
 BUNDLED WITH
    1.17.2
