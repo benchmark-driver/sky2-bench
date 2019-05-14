@@ -1,0 +1,9 @@
+[submodule "benchmark/mjit-benchmarks"]
+	path = benchmark/mjit-benchmarks
+	url = https://github.com/benchmark-driver/mjit-benchmarks
+[submodule "benchmark/ruby-method-benchmarks"]
+	path = benchmark/ruby-method-benchmarks
+	url = https://github.com/benchmark-driver/ruby-method-benchmarks
+[submodule "benchmark/optcarrot"]
+	path = benchmark/optcarrot
+	url = https://github.com/mame/optcarrot

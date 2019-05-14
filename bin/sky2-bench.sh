@@ -24,7 +24,7 @@ env \
   BUILD_RUBY_PREFIXES_DIR="/home/k0kubun/.rbenv/versions" \
   "${sky2_bench}/bin/build-ruby.rb"
 
-# 5. Update sky2-result
+# 5. Update sky2-result (cloned by sky2-infra)
 git -C "$sky2_result" fetch origin master
 git -C "$sky2_result" reset --hard remotes/origin/master
 
