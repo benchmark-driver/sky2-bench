@@ -29,15 +29,17 @@ git -C "$sky2_result" fetch origin master
 git -C "$sky2_result" reset --hard remotes/origin/master
 
 # 6. Update all release benchmark yamls
-# "${sky2_bench}/bin/release-bench.rb"
+bundle check || bundle install -j24
+bundle exec "${sky2_bench}/bin/release-bench.rb"
 
-# 7. Update benchmark yamls for the oldest revision
-# "${sky2_bench}/bin/commit-bench.rb"
+# 7. Update benchmark yamls for some limited revisions
+bundle exec "${sky2_bench}/bin/commit-bench.rb"
 
 # 8. Commit sky2-result
-# git add benchmark/results
-# if ! git diff-index --quiet HEAD --; then
-#   git commit -m "Benchmark result update by skybench"
-#   git pull --rebase origin master
-#   git push origin master
-# fi
+cd "$sky2_result"
+git add .
+if ! git diff-index --quiet HEAD --; then
+  git commit -m "Benchmark result update by sky2-bench"
+  git pull --rebase origin master
+  git push origin master
+fi
