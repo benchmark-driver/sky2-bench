@@ -1,0 +1,16 @@
+.benchmark_page
+  .text-center
+    %h1 MJIT: Ruby Releases
+
+    = github_link 'benchmark-driver/mjit-benchmarks'
+
+    :ruby
+      results = fetch_results('mjit-benchmarks/benchmarks/*.yml', releases: true)
+      locals = {
+        value_by_version_by_job: results.fetch('results'),
+        description_by_version: results.fetch('descriptions'),
+        metrics_unit: results.fetch('metrics_unit'),
+        width_percent: 70,
+        chart_type: 'column',
+      }
+    = partial '../graphs', locals: locals

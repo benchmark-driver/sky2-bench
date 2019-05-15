@@ -1,0 +1,17 @@
+.benchmark_page
+  .text-center
+    %h1 Ruby Method (#{prefix}): Ruby Releases
+
+    = github_link 'benchmark-driver/ruby-method-benchmarks'
+
+    :ruby
+      results = fetch_results('ruby-method-benchmarks/benchmarks/**/*.yml', releases: true)
+      value_by_version_by_job = results.fetch('results').select { |k, v| k.split(/\#|\./).first == prefix }.to_h
+      locals = {
+        value_by_version_by_job: value_by_version_by_job,
+        description_by_version: results.fetch('descriptions'),
+        metrics_unit: results.fetch('metrics_unit'),
+        width_percent: 70,
+        chart_type: 'column',
+      }
+    = partial '../../graphs', locals: locals

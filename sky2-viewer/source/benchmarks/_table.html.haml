@@ -1,0 +1,36 @@
+:ruby
+  results = [
+    { name: 'Ruby Method', prefix: 'ruby_method', description: 'Ruby method benchmark set created by Watson1978', categories: %w[Array Enumerable Hash Object Range String Time] },
+    { name: 'MJIT',        prefix: 'mjit',        description: 'Benchmark set created by Vladimir Makarov' },
+    { name: 'Optcarrot',   prefix: 'optcarrot',   description: 'Benchmark created by Yusuke Endoh' },
+  ]
+- results.each do |definition|
+  %h2.text-center= definition.fetch(:name)
+  %h4.text-center= definition.fetch(:description)
+
+  %table.benchmarks-table.table.table-striped
+    - if definition.key?(:categories)
+      %thead
+        %tr
+          %th Name
+          %th Category
+          %th Results
+      %tbody
+        - definition[:categories].each_with_index do |category, index|
+          %tr
+            %td= definition.fetch(:name)
+            %td= category
+            %td.margined-links
+              = link_to 'Ruby Releases', "/benchmarks/#{definition.fetch(:prefix)}/releases/#{category}.html"
+              = link_to 'Ruby Commits', "/benchmarks/#{definition.fetch(:prefix)}/commits/#{category}.html"
+    - else
+      %thead
+        %tr
+          %th Name
+          %th Results
+      %tbody
+        %tr
+          %td= definition.fetch(:name)
+          %td.margined-links
+            = link_to 'Ruby Releases', "/benchmarks/#{definition.fetch(:prefix)}/releases.html"
+            = link_to 'Ruby Commits', "/benchmarks/#{definition.fetch(:prefix)}/commits.html"
