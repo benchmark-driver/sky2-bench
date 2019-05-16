@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# Executed by bin/run
+# Executed by bin/sky2-bench.sh
 require 'shellwords'
 
 # Arguments:
