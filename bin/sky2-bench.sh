@@ -33,7 +33,7 @@ env \
   BUILD_DESCRIPTIONS_PATH="${sky2_result}/descriptions.yml" \
   BUILD_DESCRIPTIONS_PREFIXES_DIR="/home/k0kubun/.rbenv/versions" \
   BUILD_DESCRIPTIONS_RUBY_REPOSITORY="$ruby_repo" \
-  BUILD_DESCRIPTIONS_RUBY_REVISIONS="3000" \
+  BUILD_DESCRIPTIONS_RUBY_REVISIONS="2000" \
   "${sky2_bench}/bin/build-descriptions.rb"
 
 # 7. Update all release benchmark yamls
