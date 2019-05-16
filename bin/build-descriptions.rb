@@ -28,10 +28,10 @@ ruby_repository = ENV.fetch('BUILD_DESCRIPTIONS_RUBY_REPOSITORY')
 ruby_revisions = ENV.fetch('BUILD_DESCRIPTIONS_RUBY_REVISIONS')
 
 releases = Dir.glob(File.join(prefixes_dir, '*')).map(&File.method(:basename)).reject { |f| f.match(/\A\h{10}\z/) }
-release_descriptions = releases.map { |r| Gem::Version.new(r) }.sort.flat_map { |v|
+release_descriptions = releases.sort { |a, b| Gem::Version.new(a) <=> Gem::Version.new(b) }.flat_map { |v|
   [
-    [v.to_s, IO.popen([File.join(prefixes_dir, v.to_s, 'bin/ruby'), '-v'], &:read).rstrip],
-    *([["#{v} --jit", IO.popen([File.join(prefixes_dir, v.to_s, 'bin/ruby'), '--jit', '-v'], &:read).rstrip]] if v >= Gem::Version.new('2.6.0')),
+    [v, IO.popen([File.join(prefixes_dir, v, 'bin/ruby'), '-v'], &:read).rstrip],
+    *([["#{v} --jit", IO.popen([File.join(prefixes_dir, v, 'bin/ruby'), '--jit', '-v'], &:read).rstrip]] if Gem::Version.new(v) >= Gem::Version.new('2.6.0')),
   ]
 }
 
