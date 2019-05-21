@@ -30,7 +30,8 @@ pattern_configs.each do |pattern, config|
     result_file = File.join(result_dir, definition_file.delete_prefix(definition_dir))
 
     # rule out old rubies by required_ruby_version
-    required_versions = Array(YAML.load_file(definition_file).fetch('benchmark', [])).map { |b| b.is_a?(Hash) && b['required_ruby_version'] }.compact
+    required_versions = Array(YAML.load_file(definition_file).fetch('benchmark', []))
+      .select { |b| b.is_a?(Hash) }.map { |b| b['required_ruby_version'] }.compact
     runnable_versions =
       if File.exist?(result_file)
         ruby_versions.select { |v| required_versions.all? { |req| Gem::Version.new(v) >= Gem::Version.new(req) } } # be conservative for the second run
