@@ -83,9 +83,6 @@ class BenchmarkDriver::Output::Sky2
       value_by_exec.each do |exec, value|
         base_hash['results'][job][exec] = value
       end
-
-      # sort hash
-      base_hash['results'][job] = Hash[base_hash['results'][job].to_a.sort_by(&:first)]
     end
 
     FileUtils.mkdir_p(File.dirname(path))
