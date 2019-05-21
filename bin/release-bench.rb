@@ -27,16 +27,22 @@ ruby_versions = Dir.glob(File.join(prefixes_dir, '*')).map(&File.method(:basenam
 
 pattern_configs.each do |pattern, config|
   Dir.glob(File.join(definition_dir, pattern)).each do |definition_file|
+    result_file = File.join(result_dir, definition_file.delete_prefix(definition_dir))
+
     # rule out old rubies by required_ruby_version
     required_versions = Array(YAML.load_file(definition_file).fetch('benchmark', [])).map { |b| b['required_ruby_version'] }.compact
-    runnable_versions = ruby_versions.select { |v| required_versions.all? { |req| Gem::Version.new(v) >= Gem::Version.new(req) } }
+    runnable_versions =
+      if File.exist?(result_file)
+        ruby_versions.select { |v| required_versions.all? { |req| Gem::Version.new(v) >= Gem::Version.new(req) } } # be conservative for the second run
+      else
+        ruby_versions # run everything for the first run
+      end
     target_versions = [
       *runnable_versions,
       *runnable_versions.select { |v| Gem::Version.new(v) >= Gem::Version.new('2.6.0') }.map { |v| "#{v} --jit" },
     ]
 
     # get versions built for all benchmarks in definition
-    result_file = File.join(result_dir, definition_file.delete_prefix(definition_dir))
     built_versions =
       if File.exist?(result_file)
         YAML.load_file(result_file).fetch('results')
