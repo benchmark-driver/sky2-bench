@@ -6,7 +6,7 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    benchmark_driver (0.14.15)
+    benchmark_driver (0.14.16)
 
 PLATFORMS
   ruby
