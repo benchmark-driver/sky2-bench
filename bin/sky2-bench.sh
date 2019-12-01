@@ -18,7 +18,7 @@ git submodule init && git submodule update
 
 # 4. Build latest 6000 ruby revisions
 env \
-  BUILD_RUBY_BACKFILL=true \
+  BUILD_RUBY_BACKFILL=false \
   BUILD_RUBY_BRANCH=master \
   BUILD_RUBY_REVISIONS=6000 \
   BUILD_RUBY_REPOSITORY="$ruby_repo" \
