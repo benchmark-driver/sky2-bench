@@ -16,10 +16,11 @@ git submodule init && git submodule update
 # 3. Install ruby releases
 # delegated to sky2-infra for now
 
-# 4. Build latest 3000 ruby revisions
+# 4. Build latest 6000 ruby revisions
 env \
+  BUILD_RUBY_BACKFILL=true \
   BUILD_RUBY_BRANCH=master \
-  BUILD_RUBY_REVISIONS=3000 \
+  BUILD_RUBY_REVISIONS=6000 \
   BUILD_RUBY_REPOSITORY="$ruby_repo" \
   BUILD_RUBY_PREFIXES_DIR="/home/k0kubun/.rbenv/versions" \
   "${sky2_bench}/bin/build-ruby.rb"

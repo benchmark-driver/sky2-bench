@@ -3,10 +3,12 @@
 require 'shellwords'
 
 # Arguments:
+#   $BUILD_RUBY_BACKFILL
 #   $BUILD_RUBY_BRANCH
 #   $BUILD_RUBY_REVISIONS
 #   $BUILD_RUBY_REPOSITORY
 #   $BUILD_RUBY_PREFIXES_DIR
+build_ruby_backfill = (ENV.fetch('BUILD_RUBY_BACKFILL', 'false') == 'true')
 build_ruby_revisions = Integer(ENV.fetch('BUILD_RUBY_REVISIONS', '1000'))
 build_ruby_repository = ENV.fetch('BUILD_RUBY_REPOSITORY')
 
@@ -67,10 +69,11 @@ Dir.chdir(build_ruby_repository) do
 
   latest_built_revision = latest_revisions.reverse.find { |rev| built_revisions.include?(rev) }
   revisions_to_build =
-    if latest_built_revision
+    if latest_built_revision && !build_ruby_backfill
+      # To avoid building broken revisions every time
       latest_revisions[(latest_revisions.index(latest_built_revision) + 1)..]
     else
-      latest_revisions
+      latest_revisions - built_revisions
     end
 
   revisions_to_build.each do |revision|
