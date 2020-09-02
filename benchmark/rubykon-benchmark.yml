@@ -3,5 +3,5 @@ name: Rubykon
 command: rubykon-benchmark.rb
 metrics:
   Seconds:
-    unit: sec
+    unit: i/s
     from_stdout: 'Float(stdout)'
