@@ -7,3 +7,6 @@
 [submodule "benchmark/optcarrot"]
 	path = benchmark/optcarrot
 	url = https://github.com/mame/optcarrot
+[submodule "benchmark/rubykon"]
+	path = benchmark/rubykon
+	url = https://github.com/PragTob/rubykon.git

@@ -1,0 +1,7 @@
+type: ruby_stdout
+name: Rubykon
+command: rubykon-benchmark.rb
+metrics:
+  Seconds:
+    unit: sec
+    from_stdout: 'Float(stdout)'

@@ -20,6 +20,7 @@ BenchConfig = Struct.new(
 
 pattern_configs = {
   'optcarrot/benchmark.yml'                    => BenchConfig.new(revisions: 10, vm_count: 4, jit_count: 4),
+  'rubykon-benchmark.yml'                      => BenchConfig.new(revisions:  1, vm_count: 1, jit_count: 1),
   'mjit-benchmarks/benchmarks/*.yml'           => BenchConfig.new(revisions:  1, vm_count: 1, jit_count: 1),
   'ruby-method-benchmarks/benchmarks/**/*.yml' => BenchConfig.new(revisions:  1, vm_count: 1, jit_count: 0),
 }
