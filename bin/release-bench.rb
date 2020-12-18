@@ -14,15 +14,16 @@ result_dir     = ENV.fetch('RELEASE_BENCH_RESULT_DIR')
 BenchConfig = Struct.new(
   :vm_count,  # --repeat-count for VM executions
   :jit_count, # --repeat-count for JIT executions
+  :timeout,   # --timeout
   keyword_init: true,
 )
 
 pattern_configs = {
-  'optcarrot/benchmark.yml'                    => BenchConfig.new(vm_count: 4, jit_count: 4),
-  'optcarrot/benchmark_3000.yml'               => BenchConfig.new(vm_count: 4, jit_count: 4),
-  'rubykon-benchmark.yml'                      => BenchConfig.new(vm_count: 1, jit_count: 1),
-  'mjit-benchmarks/benchmarks/*.yml'           => BenchConfig.new(vm_count: 1, jit_count: 1),
-  'ruby-method-benchmarks/benchmarks/**/*.yml' => BenchConfig.new(vm_count: 1, jit_count: 0),
+  'optcarrot/benchmark.yml'                    => BenchConfig.new(vm_count: 4, jit_count: 4, timeout:  60),
+  'optcarrot/benchmark_3000.yml'               => BenchConfig.new(vm_count: 4, jit_count: 4, timeout: 360),
+  'rubykon-benchmark.yml'                      => BenchConfig.new(vm_count: 1, jit_count: 1, timeout:  60),
+  'mjit-benchmarks/benchmarks/*.yml'           => BenchConfig.new(vm_count: 1, jit_count: 1, timeout:  60),
+  'ruby-method-benchmarks/benchmarks/**/*.yml' => BenchConfig.new(vm_count: 1, jit_count: 0, timeout:  60),
 }
 
 ruby_versions = Dir.glob(File.join(prefixes_dir, '*')).map(&File.method(:basename)).reject { |f| f.match(/\A\h{10}\z/) }
@@ -62,7 +63,7 @@ pattern_configs.each do |pattern, config|
       next if versions.empty? || repeat_count == 0
       cmd = [
         'benchmark-driver', definition_file, '--rbenv', versions.join(';'),
-        '--repeat-count', repeat_count.to_s, '--output', 'sky2', '--timeout', '60',
+        '--repeat-count', repeat_count.to_s, '--output', 'sky2', '--timeout', config.timeout.to_s,
       ]
       puts "+ #{cmd.shelljoin}"
       unless system({ 'RESULT_YAML' => result_file }, *cmd) # Keep running even on failure of each benchmark execution
