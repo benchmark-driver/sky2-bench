@@ -28,6 +28,7 @@ pattern_configs = {
 }
 
 ruby_revisions = Dir.glob(File.join(prefixes_dir, '*')).map(&File.method(:basename)).select { |f| f.match(/\A\h{10}\z/) }
+descriptions = YAML.safe_load(File.read(File.join(result_dir, 'descriptions.yml'))).fetch('commits')
 
 pattern_configs.each do |pattern, config|
   target_revisions = [*ruby_revisions, *ruby_revisions.map { |v| "#{v} --jit" }]
@@ -49,7 +50,7 @@ pattern_configs.each do |pattern, config|
 
     # schedule limited numbers for this run
     build_scheduler = proc do |versions|
-      latest = versions.max_by { |v| `~/.rbenv/versions/#{v}/bin/ruby -v` }
+      latest = descriptions.fetch(versions)
       [latest, *versions.sample(config.revisions - 1)]
     end
     vm_versions  = build_scheduler.call(vm_versions)
