@@ -50,7 +50,7 @@ pattern_configs.each do |pattern, config|
 
     # schedule limited numbers for this run
     build_scheduler = proc do |versions|
-      latest = descriptions.fetch(versions)
+      latest = versions.max_by { |v| descriptions.fetch(v) }
       [latest, *versions.sample(config.revisions - 1)]
     end
     vm_versions  = build_scheduler.call(vm_versions)
