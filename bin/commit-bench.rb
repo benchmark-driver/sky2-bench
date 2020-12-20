@@ -48,8 +48,12 @@ pattern_configs.each do |pattern, config|
     jit_versions, vm_versions = (target_revisions - built_revisions).partition { |v| v.end_with?(' --jit') }
 
     # schedule limited numbers for this run
-    vm_versions  = vm_versions.sample(config.revisions)
-    jit_versions = jit_versions.sample(config.revisions)
+    build_scheduler = proc do |versions|
+      latest = versions.max_by { |v| `~/.rbenv/versions/#{v}/bin/ruby -v` }
+      [latest, *versions.sample(config.revisions - 1)]
+    end
+    vm_versions  = build_scheduler.call(vm_versions)
+    jit_versions = build_scheduler.call(jit_versions)
 
     # never make JIT-only or VM-only results
     vm_versions  |= jit_versions.map { |v| v.delete_suffix(' --jit') }
