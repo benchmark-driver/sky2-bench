@@ -52,7 +52,7 @@ pattern_configs.each do |pattern, config|
     build_scheduler = proc do |versions|
       next [] if config.revisions == 0
       latest = versions.max_by { |v| descriptions.fetch(v, '') }
-      [latest, *versions.sample(config.revisions - 1)]
+      [latest, *versions.sample(config.revisions - 1)].compact
     end
     vm_versions  = build_scheduler.call(vm_versions)
     jit_versions = build_scheduler.call(jit_versions)
