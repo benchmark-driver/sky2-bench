@@ -22,9 +22,8 @@ BenchConfig = Struct.new(
 pattern_configs = {
   'optcarrot/benchmark.yml'                    => BenchConfig.new(revisions: 3, vm_count: 4, jit_count: 4, timeout:  60),
   'optcarrot/benchmark_3000.yml'               => BenchConfig.new(revisions: 3, vm_count: 2, jit_count: 2, timeout: 360),
-  'rubykon-benchmark.yml'                      => BenchConfig.new(revisions: 0, vm_count: 1, jit_count: 1, timeout:  60),
-  'mjit-benchmarks/benchmarks/*.yml'           => BenchConfig.new(revisions: 0, vm_count: 1, jit_count: 1, timeout:  60),
-  'ruby-method-benchmarks/benchmarks/**/*.yml' => BenchConfig.new(revisions: 0, vm_count: 1, jit_count: 0, timeout:  60),
+  'rubykon-benchmark.yml'                      => BenchConfig.new(revisions: 1, vm_count: 1, jit_count: 1, timeout:  60),
+  'ruby-method-benchmarks/benchmarks/**/*.yml' => BenchConfig.new(revisions: 1, vm_count: 1, jit_count: 0, timeout:  60),
 }
 
 ruby_revisions = Dir.glob(File.join(prefixes_dir, '*')).map(&File.method(:basename)).select { |f| f.match(/\A\h{10}\z/) }
