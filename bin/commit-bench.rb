@@ -12,25 +12,26 @@ prefixes_dir   = ENV.fetch('RELEASE_BENCH_PREFIXES_DIR')
 result_dir     = ENV.fetch('RELEASE_BENCH_RESULT_DIR')
 
 BenchConfig = Struct.new(
-  :revisions, # Scheduling priority. Larger is built more.
-  :vm_count,  # --repeat-count for VM executions
-  :jit_count, # --repeat-count for JIT executions
-  :timeout,   # --timeout
+  :revisions,  # Scheduling priority. Larger is built more.
+  :vm_count,   # --repeat-count for VM executions
+  :jit_count,  # --repeat-count for JIT executions
+  :yjit_count, # --repeat-count for YJIT executions
+  :timeout,    # --timeout
   keyword_init: true,
 )
 
 pattern_configs = {
-  'optcarrot/benchmark.yml'                    => BenchConfig.new(revisions: 3, vm_count: 4, jit_count: 4, timeout:  60),
-  'optcarrot/benchmark_3000.yml'               => BenchConfig.new(revisions: 3, vm_count: 2, jit_count: 2, timeout: 360),
-  'rubykon-benchmark.yml'                      => BenchConfig.new(revisions: 1, vm_count: 1, jit_count: 1, timeout:  60),
-  'ruby-method-benchmarks/benchmarks/**/*.yml' => BenchConfig.new(revisions: 1, vm_count: 1, jit_count: 0, timeout:  60),
+  'optcarrot/benchmark.yml'                    => BenchConfig.new(revisions: 3, vm_count: 4, jit_count: 4, yjit_count: 4, timeout:  60),
+  'optcarrot/benchmark_3000.yml'               => BenchConfig.new(revisions: 3, vm_count: 2, jit_count: 2, yjit_count: 2, timeout: 360),
+  'rubykon-benchmark.yml'                      => BenchConfig.new(revisions: 1, vm_count: 1, jit_count: 1, yjit_count: 1, timeout:  60),
+  'ruby-method-benchmarks/benchmarks/**/*.yml' => BenchConfig.new(revisions: 1, vm_count: 1, jit_count: 0, yjit_count: 0, timeout:  60),
 }
 
 ruby_revisions = Dir.glob(File.join(prefixes_dir, '*')).map(&File.method(:basename)).select { |f| f.match(/\A\h{10}\z/) }
 descriptions = YAML.safe_load(File.read(File.join(result_dir, 'descriptions.yml'))).fetch('commits')
 
 pattern_configs.each do |pattern, config|
-  target_revisions = [*ruby_revisions, *ruby_revisions.map { |v| "#{v} --jit" }]
+  target_revisions = [*ruby_revisions, *ruby_revisions.map { |v| "#{v} --jit" }, *ruby_revisions.map { |v| "#{v} --yjit" }]
 
   Dir.glob(File.join(definition_dir, pattern)).each do |definition_file|
     result_file = File.join(result_dir, definition_file.delete_prefix(definition_dir))
@@ -45,7 +46,8 @@ pattern_configs.each do |pattern, config|
       end
 
     # separate for different --repeat-count
-    jit_versions, vm_versions = (target_revisions - built_revisions).partition { |v| v.end_with?(' --jit') }
+    jit_versions, other_versions = (target_revisions - built_revisions).partition { |v| v.end_with?(' --jit') }
+    yjit_versions, vm_versions = other_versions.partition { |v| v.end_with?(' --yjit') }
 
     # schedule limited numbers for this run
     build_scheduler = proc do |versions|
@@ -53,12 +55,15 @@ pattern_configs.each do |pattern, config|
       latest = versions.max_by { |v| descriptions.fetch(v, '') }
       [latest, *versions.sample(config.revisions - 1)].compact
     end
-    vm_versions  = build_scheduler.call(vm_versions)
-    jit_versions = build_scheduler.call(jit_versions)
+    vm_versions   = build_scheduler.call(vm_versions)
+    jit_versions  = build_scheduler.call(jit_versions)
+    yjit_versions = build_scheduler.call(yjit_versions)
 
     # never make JIT-only or VM-only results
-    vm_versions  |= jit_versions.map { |v| v.delete_suffix(' --jit') }
-    jit_versions |= vm_versions.map { |v| "#{v} --jit" }
+    vm_versions   |= jit_versions.map { |v| v.delete_suffix(' --jit') }
+    vm_versions   |= yjit_versions.map { |v| v.delete_suffix(' --yjit') }
+    jit_versions  |= vm_versions.map { |v| "#{v} --jit" }
+    yjit_versions |= vm_versions.map { |v| "#{v} --yjit" }
 
     # run benchmarks
     benchmark_driver = proc do |versions, repeat_count|
@@ -74,5 +79,6 @@ pattern_configs.each do |pattern, config|
     end
     benchmark_driver.call(vm_versions, config.vm_count)
     benchmark_driver.call(jit_versions, config.jit_count)
+    benchmark_driver.call(yjit_versions, config.yjit_count)
   end
 end
