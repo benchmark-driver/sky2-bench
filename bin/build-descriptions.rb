@@ -44,6 +44,7 @@ commits_descriptions = sorted_commits.select { |r| built_commits.include?(r) }.f
   [
     [r, IO.popen([File.join(prefixes_dir, r, 'bin/ruby'), '-v'], &:read).rstrip],
     ["#{r} --jit", IO.popen([File.join(prefixes_dir, r, 'bin/ruby'), '--jit', '-v'], &:read).rstrip],
+    ["#{r} --yjit", IO.popen([File.join(prefixes_dir, r, 'bin/ruby'), '--yjit', '-v'], &:read).rstrip],
   ]
 }
 
