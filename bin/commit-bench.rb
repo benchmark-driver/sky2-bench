@@ -68,6 +68,11 @@ pattern_configs.each do |pattern, config|
     # run benchmarks
     benchmark_driver = proc do |versions, repeat_count|
       next if versions.empty? || repeat_count == 0
+      versions = versions.map do |version|
+        segments = version.split(' ')
+        segments[1, 0] = '--disable=yjit'
+        "#{version}::#{segments.join(' ')}"
+      end
       cmd = [
         'benchmark-driver', definition_file, '--rbenv', versions.join(';'),
         '--repeat-count', repeat_count.to_s, '--output', 'sky2', '--timeout', config.timeout.to_s,
