@@ -41,11 +41,32 @@ sorted_commits = IO.popen([
   '--topo-order', '-n', ruby_revisions.to_s
 ], &:read).lines.map(&:strip) # older first
 commits_descriptions = sorted_commits.select { |r| built_commits.include?(r) }.flat_map { |r|
-  [
-    [r, IO.popen([File.join(prefixes_dir, r, 'bin/ruby'), '-v'], &:read).rstrip],
-    ["#{r} --jit", IO.popen([File.join(prefixes_dir, r, 'bin/ruby'), '--jit', '-v'], &:read).rstrip],
-    ["#{r} --yjit", IO.popen([File.join(prefixes_dir, r, 'bin/ruby'), '--yjit', '-v'], &:read).rstrip],
-  ]
+  v_command = proc do |*args|
+    IO.popen([File.join(prefixes_dir, r, 'bin/ruby'), '-v', *args], &:read).rstrip
+  end
+
+  ruby_v = v_command.call
+  if ruby_v.include?('YJIT')
+    ruby_yjit_v = ruby_v
+    ruby_jit_v = v_command.call('--disable=yjit', '--jit')
+    ruby_v = v_command.call('--disable=yjit')
+  else
+    ruby_jit_v = v_command.call('--jit')
+    ruby_yjit_v = v_command.call('--yjit')
+  end
+
+  if ruby_yjit_v.empty?
+    [
+      [r, ruby_v],
+      ["#{r} --jit", ruby_jit_v],
+    ]
+  else
+    [
+      [r, ruby_v],
+      ["#{r} --jit", ruby_jit_v],
+      ["#{r} --yjit", ruby_yjit_v],
+    ]
+  end
 }
 
 File.write(descriptions_path, {
