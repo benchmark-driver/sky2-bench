@@ -76,7 +76,7 @@ pattern_configs.each do |pattern, config|
         "#{version}::#{segments.join(' ')}"
       end
       cmd = [
-        'benchmark-driver', definition_file, '--rbenv', versions.join(';'),
+        'benchmark-driver', definition_file, '--rbenv', versions.map { |v| v.gsub(/--jit/, '--mjit') }.join(';'),
         '--repeat-count', repeat_count.to_s, '--output', 'sky2', '--timeout', config.timeout.to_s,
       ]
       puts "+ #{cmd.shelljoin}"
