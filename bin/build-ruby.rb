@@ -41,7 +41,7 @@ class << RubyBuilder
   private
 
   def try_make(prefix)
-    execute("./configure --prefix=#{prefix.shellescape} --disable-install-doc") && execute('make', '-j4', 'all', 'install')
+    execute("./configure --prefix=#{prefix.shellescape} --disable-install-doc") && execute('timeout', '300', 'make', '-j4', 'all', 'install')
   end
 
   def clean_make(prefix)
