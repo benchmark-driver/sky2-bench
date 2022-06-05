@@ -37,22 +37,14 @@ env \
   BUILD_DESCRIPTIONS_RUBY_REVISIONS="6000" \
   "${sky2_bench}/bin/build-descriptions.rb"
 
-# 7. Update all release benchmark yamls
-bundle check || bundle install -j24
-env \
-  RELEASE_BENCH_DEFINITION_DIR="${sky2_bench}/benchmark" \
-  RELEASE_BENCH_PREFIXES_DIR="/home/k0kubun/.rbenv/versions" \
-  RELEASE_BENCH_RESULT_DIR="${sky2_result}" \
-  bundle exec "${sky2_bench}/bin/release-bench.rb"
-
-# 8. Update benchmark yamls for some limited revisions
+# 7. Update benchmark yamls for some revisions
 env \
   RELEASE_BENCH_DEFINITION_DIR="${sky2_bench}/benchmark" \
   RELEASE_BENCH_PREFIXES_DIR="/home/k0kubun/.rbenv/versions" \
   RELEASE_BENCH_RESULT_DIR="${sky2_result}" \
   bundle exec "${sky2_bench}/bin/commit-bench.rb"
 
-# 9. Commit sky2-result
+# 8. Commit sky2-result
 cd "$sky2_result"
 git add .
 if ! git diff-index --quiet HEAD --; then
